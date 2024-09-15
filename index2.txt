@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Matematika - Keliling dan Luas Bangun Datar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        #question-area {
+            margin-bottom: 10px;
+        }
+
+        #timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
+
+        #result {
+            color: green;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        #score {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        #trophy-area {
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #trophy {
+            width: 100px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Game Matematika - Keliling dan Luas Bangun Datar</h1>
+        <div id="game-area">
+            <div id="question-area">
+                <p id="question"></p>
+            </div>
+            <input type="number" id="answer" placeholder="Jawaban">
+            <button id="submit-answer">Submit Jawaban</button>
+            <div id="timer"></div>
+            <p id="result"></p>
+            <p id="score"></p>
+        </div>
+        <div id="trophy-area" class="hidden">
+            <h2>Selamat!</h2>
+            <p>Kamu telah menjawab semua soal dengan benar!</p>
+            <img src="trophy.png" alt="Trophy" id="trophy">
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Keliling persegi dengan sisi 5 cm?", answer: 20 },
+            { question: "Luas persegi dengan sisi 4 cm?", answer: 16 },
+            { question: "Keliling persegi panjang dengan panjang 6 cm dan lebar 3 cm?", answer: 18 },
+            { question: "Luas persegi panjang dengan panjang 5 cm dan lebar 2 cm?", answer: 10 },
+            { question: "Keliling segitiga sama sisi dengan sisi 7 cm?", answer: 21 },
+            { question: "Luas segitiga dengan alas 8 cm dan tinggi 4 cm?", answer: 16 },
+            { question: "Keliling lingkaran dengan jari-jari 7 cm (π = 3.14)?", answer: 43.96 },
+            { question: "Luas lingkaran dengan jari-jari 7 cm (π = 3.14)?", answer: 153.86 },
+            { question: "Keliling jajaran genjang dengan panjang 6 cm dan lebar 4 cm?", answer: 20 },
+            { question: "Luas jajaran genjang dengan alas 5 cm dan tinggi 3 cm?", answer: 15 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let timer;
+
+        document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+        document.getElementById('answer').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        function startGame() {
+            document.getElementById('game-area').classList.remove('hidden');
+            document.getElementById('trophy-area').classList.add('hidden');
+            score = 0;
+            currentQuestion = 0;
+            loadQuestion();
+            startTimer();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('question').innerText = questions[currentQuestion].question;
+                document.getElementById('answer').value = '';
+                document.getElementById('result').innerText = '';
+                document.getElementById('score').innerText = `Skor: ${score}`;
+            } else {
+                endGame();
+            }
+        }
+
+        function startTimer() {
+            timeLeft = 60;
+            document.getElementById('timer').innerText = `Waktu: ${timeLeft}s`;
+            timer = setInterval(function () {
+                timeLeft--;
+                document.getElementById('timer').innerText = `Waktu: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    checkAnswer();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById('answer').value);
+            if (userAnswer === questions[currentQuestion].answer) {
+                score++;
+                document.getElementById('result').innerText = "Jawaban benar!";
+            } else {
+                document.getElementById('result').innerText = "Jawaban salah!";
+            }
+
+            clearInterval(timer);
+            currentQuestion++;
+            setTimeout(loadQuestion, 1000);
+        }
+
+        function endGame() {
+            document.getElementById('game-area').classList.add('hidden');
+            if (score === questions.length) {
+                document.getElementById('trophy-area').classList.remove('hidden');
+            } else {
+                document.getElementById('result').innerText = `Skor akhir: ${score}/${questions.length}`;
+            }
+        }
+
+        // Mulai game setelah halaman dimuat
+        window.onload = startGame;
+    </script>
+</body>
+</html>
